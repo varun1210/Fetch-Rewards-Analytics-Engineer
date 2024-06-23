@@ -95,12 +95,12 @@ limit 5;
 ```
 
 2. How does the ranking of the top 5 brands by receipts scanned for the recent month compare to the ranking for the previous month?  
-*All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. For the previous month (February 2021), the top 5 brands by items purchased are:*   
+*All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. For the previous month (February 2021), the top 5 brands by items purchased are (assumption regarding the definition of "top 5 brands" from the previous query applies here as well):*     
     - *unbranded items/no brand code: 186*
     - *brand_code "BRAND" (no brandName associated): 3*
     - *brand_code "MISSION" (no brandName associated): 2*
     - *Viva: 1*  
-*Same assumption regarding the definition of "top 5 brands" from the previous query applies here as well.*
+
 ```
 with month_year as (
     select distinct
@@ -144,13 +144,13 @@ order by count(*) desc
 limit 5;
 ```
 
-3. When considering average spend from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?
+3. When considering average spend from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?  
     *NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder*
 
 4. When considering total number of items purchased from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?  
     *NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder*
 
-5. Which brand has the most spend among users who were created within the past 6 months?
+5. Which brand has the most spend among users who were created within the past 6 months?  
 *I define a brand's 'spend' as the aggregation of final prices of the items sold by the brand on the receipts. There are many price columns to consider, so I will require further stakeholder validation for this definition.*  
 *But, considering this definition of a brand's spend, the brand with the highest spend is:*  
 *brandCode: "BEN AND JERRYS", brandName: No information available*  
@@ -188,7 +188,7 @@ group by items.brand_code, brands.brand_name
 order by brand_spend desc;
 ```
 
-6. Which brand has the most transactions among users who were created within the past 6 months?
+6. Which brand has the most transactions among users who were created within the past 6 months?  
 *I define a brand's 'transactions' as the aggregation of the number of times the brand's items have appeared on the receipts. I will require further stakeholder validation for this definition.*  
 *But, considering this definition of a brand's transactions, the brand with the highest transactions is:*  
 *brandCode: "HY-VEE", brandName: None available*  
@@ -319,7 +319,7 @@ A brief description of the staging tables:
 - 'stg_brands': Contains records from the brands.json file. All keys from the file have been mapped as columns.
 - 'stg_users': Contains records from the users.json file. All keys from the file have been mapped as columns.
 
-Once the stating tables have been created, we create source tables (prefixed by 'src_') in our database. These source tables have been created by further cleaning and processing of staging tables, normalizing them, enforcing a stronger schema, and define stronger relations between the entities. 
+Once the staging tables have been created, we create source tables (prefixed by 'src_') in our database. These source tables have been created by further cleaning and processing of staging tables, normalizing them, enforcing a stronger schema, and define stronger relations between the entities. 
 The creation of these tables is done through the automation of executing all the scripts in the `src_table_ddl/` directory.  
 You can refer to the data schema for more schema related information about the tables. 
 
