@@ -37,6 +37,8 @@ def create_postgres_table(table_name):
     Args:
         table_name: Table to be created
     """
+    conn = None
+    cur = None
     try:
         # Establish connection
         logger.info("Creating '{table_name}' in Postgres...".format(table_name=table_name))
@@ -55,8 +57,10 @@ def create_postgres_table(table_name):
         logger.error("Table creation failed for '{table_name}'".format(table_name=table_name))
         raise e
     finally:
-        cur.close()
-        conn.close()
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
 
 
 def create_df_from_processed_records(table_name, processed_records):
@@ -65,8 +69,8 @@ def create_df_from_processed_records(table_name, processed_records):
     creates a DataFrame with the columns ordered in a list specified by the user.
 
     Args:
+        table_name: The name of the table for which the DataFrame should be created
         processed_records: The list of dictionaries containing the processed records
-        column_order: Order in which columns should be arranged in the output DataFrame
 
     Returns:
         DataFrame with the columns ordered in the specified order 
@@ -100,6 +104,7 @@ def insert_df_into_postgres_table(table_name, dataframe):
         table_name: Table in which records are to be inserted
         dataframe: DataFrame containing the records to be inserted
     """
+    engine = None
     try:
         logger.info("Inserting data into '{table_name}' table in Postgres...".format(table_name=table_name))
         # Establish Postgres connection
@@ -118,7 +123,8 @@ def insert_df_into_postgres_table(table_name, dataframe):
         logger.error("Records insertion failed for '{table_name}'".format(table_name=table_name))
         raise e
     finally:
-        engine.dispose()
+        if engine:
+            engine.dispose()
 
 
 def ingest_data(table_name, processed_records):

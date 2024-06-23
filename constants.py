@@ -10,12 +10,12 @@ POSTGRES_CREDENTIALS = {
 POSTGRES_CONNECTION_STRING = "postgresql://{username}:{password}@{hostname}:{port}/{db_name}".format(username=POSTGRES_CREDENTIALS["username"], password=POSTGRES_CREDENTIALS["password"], hostname=POSTGRES_CREDENTIALS["hostname"], port=POSTGRES_CREDENTIALS["port"], db_name=POSTGRES_CREDENTIALS["db_name"])
 
 # SET THIS TO BE PATH WHERE YOU HAVE CLONED THIS PROJECT
-PROJECT_BASE_PATH = "/Users/varunmuppalla/documents/projects/fetch-rewards-analytics-engineer"
+# PROJECT_BASE_PATH = "/Users/varunmuppalla/documents/projects/fetch-rewards-analytics-engineer"
 
-RECEIPTS_RAW_DATA_FILE_PATH = PROJECT_BASE_PATH + "/raw_data/receipts.json.gz"
-USERS_RAW_DATA_FILE_PATH = PROJECT_BASE_PATH + "/raw_data/users.json.gz"
-BRANDS_RAW_DATA_FILE_PATH = PROJECT_BASE_PATH + "/raw_data/brands.json.gz"
+RECEIPTS_RAW_DATA_FILE_PATH = "./raw_data/receipts.json.gz"
+USERS_RAW_DATA_FILE_PATH = "./raw_data/users.json.gz"
+BRANDS_RAW_DATA_FILE_PATH = "./raw_data/brands.json.gz"
 
-STG_TABLES_BASE_PATH = PROJECT_BASE_PATH + "/stg_table_ddl/"
-SRC_TABLES_BASE_PATH = PROJECT_BASE_PATH + "/src_table_ddl/"
+STG_TABLES_BASE_PATH = "./stg_table_ddl/"
+SRC_TABLES_BASE_PATH = "./src_table_ddl/"
 

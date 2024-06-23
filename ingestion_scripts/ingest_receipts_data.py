@@ -28,6 +28,7 @@ def process_receipts_file(receipts_raw_file_path):
          - First dictionary contains records of 'stg_receipts' table
          - Second dictionary contains records of 'stg_receipts_items' table
     """
+    file = None
     try:
         logger.info("Processing receipts gzip file...")
         stg_receipts_records = []
@@ -116,7 +117,8 @@ def process_receipts_file(receipts_raw_file_path):
         raise e
     
     finally:
-        file.close()
+        if file:
+            file.close()
 
 def create_stg_receipts_and_stg_receipts_items():
     try:

@@ -25,6 +25,7 @@ def process_brands_file(brands_raw_file_path):
     Returns:
         List of dictionaries containing processed records from brands gzip file
     """
+    file = None
     logger.info("Processing brands gzip file...")
     try:
         stg_brands_records = []
@@ -57,7 +58,8 @@ def process_brands_file(brands_raw_file_path):
         logger.error("Error processing brands gzip file")
         raise e
     finally:
-        file.close()
+        if file:
+            file.close()
     
 def create_stg_brands():
     try:

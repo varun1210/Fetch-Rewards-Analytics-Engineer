@@ -27,6 +27,7 @@ def process_users_file(users_raw_file_path):
         List of dictionaries containing processed records from users gzip file
     """
     logger.info("Processing users gzip file...")
+    file = None
     try:
         stg_users_records = []
 
@@ -58,7 +59,8 @@ def process_users_file(users_raw_file_path):
         logger.error("Error processing users gzip file")
         raise e
     finally:
-        file.close()
+        if file:
+            file.close()
     
 def create_stg_users():
     try:

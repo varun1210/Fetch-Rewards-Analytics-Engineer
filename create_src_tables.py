@@ -15,6 +15,8 @@ def create_src_tables(mode="create"):
     the scripts would be orchestrated through a service like Apache Airflow or a tool like
     dbt.
     """
+    conn = None
+    cur = None
     try:
         create_stg_tables.create_stg_tables()
         logger.info("Creating source tables...")
@@ -45,8 +47,10 @@ def create_src_tables(mode="create"):
         
 
     except Exception as e:
-        cur.close()
-        conn.close()
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
         logger.error(e, exc_info=True)
         raise e
 
