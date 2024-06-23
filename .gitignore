@@ -1,0 +1,10 @@
+bin/
+include/
+lib/
+__pycache__/
+ingestion_scripts/__pycache__/
+pyvenv.cfg
+ingestion_logs.txt
+
+
+

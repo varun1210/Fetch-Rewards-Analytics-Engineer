@@ -1,0 +1,203 @@
+================
+Query to answer Questions 1 & 2:
+with month_year as (
+	select extract(month from date_scanned) as month,
+	extract(year from date_scanned) as year
+	from src_receipts 
+	order by date_scanned desc
+),
+recent_months as (
+	select distinct month, year
+	from month_year
+),
+months_age as (
+	select month, year, row_number() over(order by year desc, month desc) as age
+	from recent_months
+),
+recent as (
+	select month, year 
+	from months_age where age = 2
+),
+receipts as (
+	select receipt_id, date_scanned
+	from src_receipts
+	where extract(year from date_scanned) = (select year from recent)
+	and extract(month from date_scanned) = (select month from recent)
+),
+items as (
+	select receipt_id, brand_code
+	from src_items 
+	--where brand_code is not null
+	where src_file = 'receipts.json'
+),
+brands as (
+	select brand_name, brand_code
+	from src_brands --where brand_code is not null
+)
+select items.brand_code, brands.brand_name, count(*)
+from items
+inner join receipts 
+on items.receipt_id = receipts.receipt_id
+left join brands 
+on brands.brand_code = items.brand_code
+group by items.brand_code, brands.brand_name
+order by count(*) desc;
+
+
+++++++++++++++++++++++++
+Query to scan for duplicates in users file:
+select *, count(*) as number_of_records
+from stg_users
+group by
+user_id,
+state,
+created_date,
+last_login,
+role,
+active,
+sign_up_source
+having count(*) > 1
+
+Query to find which users are NOT 'consumer'
+select * from stg_users where trim(role) <> 'consumer';
+
+==========
+
+Query to find duplicate barcodes in brands file:
+select barcode, count(barcode) as barcode_occurance
+from stg_brands 
+group by barcode
+having count(barcode) > 1;
+
+Query to further investigate barcodes:
+select * from stg_brands where trim(barcode) in 
+('511111605058', '511111204923', '511111704140', '511111504788', '511111504139', '511111305125', '511111004790')
+order by barcode;
+
+Query to look at brandCode inconsistencies:
+select distinct brand_code from stg_brands; 
+
+Query to look at name inconsistencies:
+select distinct brand_code from stg_brands; 
+
+
+==========
+Query to find receipts of users who do not exist in the users file:
+select distinct user_id from stg_receipts where user_id not in 
+(select user_id from stg_users);
+
+Query to find receipts without receipt items:
+select * from stg_receipts where contains_items is false;
+
+Query to view differnet barcodes:
+select distinct(barcode) from stg_items;
+
+Query to find items in receipts that do not have a barcode:
+select * from stg_receipt_items where barcode is null;
+
+Query to find items in receipts that don't have a description:
+select * from stg_receipt_items where description is null or description = 'ITEM NOT FOUND';
+
++++++++++++++++++++++
+
+Questions to stakeholders:
+What should we do with the records from users.json file where role is not "CONSUMER". 
+Should we retain these records or ignore them?
+
+In the brands.json file, there is a "barcode" key for the item. The rest of the keys
+seem to exclusively contain brand related information. Is there a reason the "barcode"
+belongs in this file? 
+For now, we have taken the data in the key and combined it with the items data in the 
+"rewardsReceiptItemList" to try to generate an "items" table. We have also included a 
+flag column to indicate which file the item information was populated from. Would this 
+adversely impact our usecase in any way/does this not accurately represent the business 
+definition of this key?
+
+In the brands.json file, there is some information under the "cpg" key. Does this refer 
+to "consumer packaged goods"? Additionally, all the records in the file have a "cpgRef"
+value equal to 'Cogs'. What does this mean? Can we get some more context into the "cpg" 
+key and how this information fits into the rest of the schema? Are there any insights
+we want to derive from this information now or in the future?
+
+In our analysis, we have discovered in the brands.json file that the "categoryCode" is null
+for a lot of the records. Taking a look at the data, we realized that the "categoryCode"
+can be deduced from the category column. (Ex. "categoryCode": HEALTH_AND_WELLNESS corresponds
+to "category": Health & Wellness, PERSONAL_CARE corresponds to Personal Care, etc.). For now,
+we have populated the null values for "categoryCode" in this way. Is this okay, or do you
+anticipate some issues with this in the future?
+
+In the receipts.json file, there are many (440) receipts that do not have any items in them.
+All of these receipts also contain null values except for the keys "createDate", "dateScanned",
+"modifyDate", and "rewardsReceiptStatus". Furthermore, through analysis, we discovered that
+the timestamps recorded within these date keys are identical. Does this mean they 
+are invalid receipts? If this is the case, will we require them now or in the future?
+
+In the receipts.json file, the records have a key named "rewardsReceiptItemList". We do not 
+have a data schema to understand what a lot of the keys mean. Can we get some more 
+context/information for what these fields mean? 
+
+For now, we have constructed an "items" table using the data from the "barcode" key
+in the brands.json file and some data from the items in the "rewardsReceiptItemList" key in the
+receipts.json file. Because of this, the table is very inconsistent. Can we get more
+data pertaining to the items?
+
+The barcodes of the items in the "rewardsReceiptItemList" are of various formats. 
+We are unsure of whether some of the barcodes are valid or not. (Ex. "B076FJ92M4", "4011").
+Is there a set of constraints on how a barcode should be? If there is, can we get some more
+information so we can determine which records are valid?
+
+There is a key named "itemNumber" for some of the items (153 items) in the receipts. 60 of these
+records have the same value for "itemNumber" as they do for "barcode". Is this key relevant? 
+
+There exist receipts of some users (117 users) in the receipts.json file who do not exist in 
+the users.json file. Should we retain these receipt records?
+
+There are two keys "barcode" and "userFlaggedBarcode" in the receipts.json file items
+in the receipts. We observed that "barcode" value is always either null or equal to "userFlaggedBarcode".
+Furthermore, "userFlaggedBarcode" is always either null or equal to "barcode". Can these
+two keys be used interchangably? 
+
+There are a large number of null values for items in the "rewardsReceiptItemList" key. What is
+the most appropriate way you like us to handle these values?
+
+
++++++++++++++++++++++++++++++++++++++++
+
+psycopg2-binary
+sqlalchemy
+pandas
+numpy
+
+++++++++++++++++++++++++++++++++++++++++
+
+select r.rewards_receipt_status, count(*) 
+from src_receipts r 
+inner join src_items i on r.receipt_id = i.receipt_id
+where rewards_receipt_status in ('REJECTED','ACCEPTED')
+GROUP BY rewards_receipt_status
+
+
+
+
+look_back_date AS (
+    SELECT last_date - INTERVAL '6 months' AS six_months_ago
+    FROM max_date
+),
+
+-- Step 3: Select and group records by month for the last 6 months
+filtered_data AS (
+    SELECT *
+    FROM your_table
+    WHERE date_column >= (SELECT six_months_ago FROM look_back_date)
+)
+
+-- Step 4: Group by month and year, and count or summarize data
+SELECT
+    DATE_TRUNC('month', date_column) AS month,
+    COUNT(*) AS record_count -- Replace COUNT(*) with other aggregations if needed
+FROM filtered_data
+GROUP BY month
+ORDER BY month;
+
+
+
