@@ -27,7 +27,6 @@ receipts as (
 items as (
 	select receipt_id, brand_code
 	from src_items 
-	--where brand_code is not null
 	where src_file = 'receipts.json'
 ),
 brands as (
