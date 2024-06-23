@@ -45,11 +45,11 @@ The ER diagram to convert the unstructured model to a structured model is shown 
 
 ## **Second Requirement: Write queries that directly answer predetermined questions from a business stakeholder**
 
-#### *IMPORTANT! SQL file located in `task_requirement_dml/requirement_4.sql`*
+#### *IMPORTANT! SQL file containing queries to answer these questions is located in `task_requirement_dml/requirement_4.sql`*  
 
 1. What are the top 5 brands by receipts scanned for most recent month?  
-*All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. So, there are no top 5 brands scanned for the most recent month.* 
-*One thing to note is that I have assumed "top 5 brands" to mean "top 5 brands that have sold the most number of items". In case we are looking for "top 5 brands that have the most sales", we can modify the query accordingly.* 
+*All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. So, there are no top 5 brands scanned for the most recent month.*  
+*One thing to note is that I have assumed "top 5 brands" to mean "top 5 brands that have sold the most number of items". In case we are looking for "top 5 brands that have the most sales", we can modify the query accordingly.*  
 *In a real-world scenario, it would be best to confirm what the stakeholders' definition of "top 5 brands" is.*
 ```
 with month_year as (
@@ -94,13 +94,13 @@ order by count(*) desc
 limit 5;
 ```
 
-2. How does the ranking of the top 5 brands by receipts scanned for the recent month compare to the ranking for the previous month?
-All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. For the previous month (February 2021), the top 5 brands by items purchased are: 
-    - unbranded items/no brand code: 186
-    - brand_code "BRAND" (no brandName associated): 3
-    - brand_code "MISSION" (no brandName associated): 2
-    - Viva: 1
-Same assumption regarding the definition of "top 5 brands" from the previous query applies here as well.
+2. How does the ranking of the top 5 brands by receipts scanned for the recent month compare to the ranking for the previous month?  
+*All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. For the previous month (February 2021), the top 5 brands by items purchased are:*   
+    - *unbranded items/no brand code: 186*
+    - *brand_code "BRAND" (no brandName associated): 3*
+    - *brand_code "MISSION" (no brandName associated): 2*
+    - *Viva: 1*  
+*Same assumption regarding the definition of "top 5 brands" from the previous query applies here as well.*
 ```
 with month_year as (
     select distinct
@@ -145,16 +145,16 @@ limit 5;
 ```
 
 3. When considering average spend from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?
-    NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder
+    *NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder*
 
 4. When considering total number of items purchased from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?  
-    NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder
+    *NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder*
 
 5. Which brand has the most spend among users who were created within the past 6 months?
-I define a brand's 'spend' as the aggregation of final prices of the items sold by the brand on the receipts. There are many price columns to consider, so I will require further stakeholder validation for this definition. 
-But, considering this definition of a brand's spend, the brand with the highest spend is:  
-brandCode: "BEN AND JERRYS", brandName: No information available
-Of the brands where the brandName is available, brandName: "Cracker Barrel Cheese" (brandCode: "CRACKER BARREL") has the highest spend.
+*I define a brand's 'spend' as the aggregation of final prices of the items sold by the brand on the receipts. There are many price columns to consider, so I will require further stakeholder validation for this definition.*  
+*But, considering this definition of a brand's spend, the brand with the highest spend is:*  
+*brandCode: "BEN AND JERRYS", brandName: No information available*  
+*Of the brands where the brandName is available, brandName: "Cracker Barrel Cheese" (brandCode: "CRACKER BARREL") has the highest spend.*  
 ```
 with six_months_ago_date as(
     select max(created_date) - interval '6 months' as six_months_ago from src_users
@@ -189,10 +189,10 @@ order by brand_spend desc;
 ```
 
 6. Which brand has the most transactions among users who were created within the past 6 months?
-I define a brand's 'transactions' as the aggregation of the number of times the brand's items have appeared on the receipts. I will require further stakeholder validation for this definition. 
-But, considering this definition of a brand's transactions, the brand with the highest transactions is:  
-brandCode: "HY-VEE", brandName: None availabe
-Of the brands where brandName is available, brandName: "Pepsi" is the one with the highest number of transactions.
+*I define a brand's 'transactions' as the aggregation of the number of times the brand's items have appeared on the receipts. I will require further stakeholder validation for this definition.*  
+*But, considering this definition of a brand's transactions, the brand with the highest transactions is:*  
+*brandCode: "HY-VEE", brandName: None available*  
+*Of the brands where brandName is available, brandName: "Pepsi" is the one with the highest number of transactions.*  
 ```
 with six_months_ago_date as(
     select max(created_date) - interval '6 months' as six_months_ago from src_users
