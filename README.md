@@ -39,18 +39,18 @@ Once the source tables have been created, you can look around the data schema an
 
 # Requirements Fulfillement 
 
-## **First: Review Existing Unstructured Data and Diagram a New Structured Relational Data Model**
+## **First Requirement: Review Existing Unstructured Data and Diagram a New Structured Relational Data Model**
 The ER diagram to convert the unstructured model to a structured model is shown below. Click [here](./data_schema_definition.txt) for the structured model data schema.
 ![ER Diagram](./fetch-ER-diagram.jpg)
 
-## **Second: Write queries that directly answer predetermined questions from a business stakeholder**
+## **Second Requirement: Write queries that directly answer predetermined questions from a business stakeholder**
 
-*SQL file located in `task_requirement_dml/requirement_4.sql`*
+#### *IMPORTANT! SQL file located in `task_requirement_dml/requirement_4.sql`*
 
-1. What are the top 5 brands by receipts scanned for most recent month?
-All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. So, there are no top 5 brands scanned for the most recent month. 
-One thing to note is that I have assumed "top 5 brands" to mean "top 5 brands that have sold the most number of items". In case we are looking for "top 5 brands that have the most sales", we can modify the query accordingly. 
-In a real-world scenario, it would be best to confirm what the stakeholders' definition of "top 5 brands" is.
+1. What are the top 5 brands by receipts scanned for most recent month?  
+*All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. So, there are no top 5 brands scanned for the most recent month.* 
+*One thing to note is that I have assumed "top 5 brands" to mean "top 5 brands that have sold the most number of items". In case we are looking for "top 5 brands that have the most sales", we can modify the query accordingly.* 
+*In a real-world scenario, it would be best to confirm what the stakeholders' definition of "top 5 brands" is.*
 ```
 with month_year as (
     select distinct
