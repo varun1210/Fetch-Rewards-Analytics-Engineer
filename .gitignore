@@ -6,6 +6,10 @@ ingestion_scripts/__pycache__/
 pyvenv.cfg
 ingestion_logs.txt
 fetch_tables.py
+drop_all_tables.sql
+doc.txt
+run_sql.py
+
 
 
 

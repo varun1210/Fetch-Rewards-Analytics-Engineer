@@ -1,0 +1,98 @@
+Table: src_users
+Description: Stores information about users
+Columns: 
+    - user_id (text): User ID 
+    - role (text): Role of user
+    - active (boolean): Indicates if the user is active; only Fetch will de-activate an account with this flag
+    - sign_up_source (text): Sign up mode of user
+    - state (text): state abbreviation
+    - created_date (timestamp): when the user created their account
+    - last_login (timestamp): last time the user was recorded logging in to the app
+
+
+Table: src_receipts
+Description: Stores information about receipts
+Column:
+    - receipt_id (text): uuid for this receipt
+    - user_id (text): string id for the user who scanned the receipt
+    - bonus_points_earned (numeric(10, 2)): barcode
+    - bonus_points_earned_reason (text): event that triggered bonus points
+    - points_earned (numeric(10, 2)): The number of points earned for the receipt
+    - purchased_item_count (integer): Count of number of items on the receipt
+    - rewards_receipt_status (text): status of the receipt through receipt validation and processing
+    - total_spent (numeric): The total amount on the receipt
+    - contains_items (boolean): Flag column indicating whether receipt contains items
+    - create_date (timestamp with time zone): The date that the event was created
+    - date_scanned (timestamp with time zone): Date that the user scanned their receipt
+    - finished_date (timestamp with time zone): Date that the receipt finished processing
+    - modify_date (timestamp with time zone): The date the event was modified
+    - points_awarded_date (timestamp with time zone): The date we awarded points for the transaction
+    - purchase_date (timestamp with time zone): the date of the purchase
+
+
+Table: src_items
+Descriptions: Stores information about items
+Columns:
+    - receipt_id (text): Receipt ID from which item was taken
+    - barcode (text): item barcode
+    - item_description (text): item description
+    - brand_code (text): brand code for item
+    - item_number (text): <No definition provided>
+    - competitive_product (boolean): Indicates whether competitive product
+    - rewards_group (text): <No definition provided>
+    - competitor_rewards_group (text): <No definition provided>
+    - deleted (boolean): <No definition provided>
+    - quantity_purchased (integer): <No definition provided>
+    - item_price (numeric): <No definition provided>
+    - target_price (numeric): <No definition provided>
+    - discounted_item_price (numeric): <No definition provided>
+    - price_after_coupon (numeric): <No definition provided>
+    - final_price (numeric): <No definition provided>
+    - partner_item_id (text): <No definition provided>
+    - rewards_product_partner_id (text): <No definition provided>
+    - points_payer_id (text): <No definition provided>
+    - points_earned (numeric): <No definition provided>
+    - needs_fetch_review (boolean): <No definition provided>
+    - needs_fetch_review_reason (text): <No definition provided>
+    - points_not_awarded_reason (text): <No definition provided>
+    - prevent_target_gap_points (boolean): <No definition provided>
+    - user_flagged_barcode (text): <No definition provided>
+    - user_flagged_new_item (boolean): <No definition provided>
+    - user_flagged_price (numeric): <No definition provided>
+    - user_flagged_quantity (integer): <No definition provided>
+    - user_flagged_description (text): <No definition provided>
+    - original_meta_brite_barcode (text): <No definition provided>
+    - original_meta_brite_description (text): <No definition provided>
+    - original_receipt_item_text (text): <No definition provided>
+    - original_meta_brite_quantity_purchased (integer): <No definition provided>
+    - original_final_price (numeric): <No definition provided>
+    - original_meta_brite_item_price (numeric): <No definition provided>
+    - metabrite_campaign_id (text): <No definition provided>
+    - src_file (text): File from which this record was inserted
+
+
+Table: src_brands
+Description: Stores information about items
+Columns:
+    - brand_id (text): brand uuid
+    - brand_code (text): String that corresponds with the brand column in a partner product file
+    - brand_name (text): Brand name
+    - top_brand	(boolean): Boolean indicator for whether the brand should be featured as a 'top brand'
+    - category_id (text): category uuid for the brand
+    - cpg_id (text): <No definition provided>
+    - cpg_ref (text): <No definition provided>
+
+
+Table: src_cpg
+Description: Stores cpg information
+Columns: 
+    - cpg_id (text): <No definition provided>
+    - cpg_ref (text): <No definition provided>
+
+
+Table: src_brand_categories
+Description: Stores information about brand categories
+Columns:
+    - category_id (text): category uuid
+    - category_name (text): The category name for which the brand sells products in
+    - category_code (text): The category code that references a BrandCategory

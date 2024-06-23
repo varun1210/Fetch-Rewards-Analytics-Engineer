@@ -9,7 +9,7 @@ last_login,
 role,
 active,
 sign_up_source
-having count(*) > 1
+having count(*) > 1;
 
 -- Query to find which users are NOT 'consumer'
 select * from stg_users where trim(role) <> 'consumer';
@@ -38,14 +38,14 @@ select distinct user_id from stg_receipts where user_id not in
 -- Query to find receipts without receipt items:
 select * from stg_receipts where contains_items is false;
 
--- Query to view differnet barcode discrepencies for various in the receipts:
-select distinct(barcode) from stg_items;
+-- Query to view differnet barcode discrepencies for various items in the receipts:
+select distinct(barcode) from stg_receipts_items;
 
 -- Query to find items in receipts that do not have a barcode:
-select * from stg_receipt_items where barcode is null;
+select * from stg_receipts_items where barcode is null;
 
 -- Query to find items with no brandCode
-select * from stg_receipts_items where brand_code is null
+select * from stg_receipts_items where brand_code is null;
 
 -- Query to find items in receipts that don't have a description:
-select * from stg_receipt_items where description is null or description = 'ITEM NOT FOUND';
+select * from stg_receipts_items where description is null or description = 'ITEM NOT FOUND';
