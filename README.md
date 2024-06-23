@@ -9,7 +9,32 @@ As a consequnce the **dialect of SQL used is PostgreSQL SQL**.
 
 The submissions to the 4 requirements are outlined in the following sections of the document. 
 
-Further implementation details are after the requirements.
+Further implementation details are detailed after the task requirements.
+
+# Steps to run this project
+
+This section of the document details how to run this project as it is on your local system. Please note, that to do so, you will require Python and PostgresSQL to be installed on your local system. 
+
+In case you do not want to run the data processing of the raw files and load to Postgres, but are just interested in the final tables that have been created, there are CSV extracts in the `src_table_data_extracts/` directory. Simply load the CSVs into a data warehouse of your choice, and you can query the data as found in the ER diagram [here]('./fetch-ER-diagram.jpg').
+*Please note that all the queries that are in this repository are written and supported by PostgreSQL. Running the queries/sql directly on a different platform/data warehouse could have issues.*
+
+### Instructions to run:
+To run the source code, at the very minimum you will need Python and PostgresSQL to be installed on your system. 
+Adding python to your HOME will make the execution of this code easier.
+
+1. Clone this repository to your system `git clone https://github.com/varun1210/Fetch-Rewards-Analytics-Engineer.git`.
+2. Navigate to the root of this repository `cd fetch-rewards-analytics-engineer`. 
+3. Create a python virtual environment `python -m venv .`.
+4. Activate the virtual environment. `source bin/activate` (Linux-based OS, Mac)/`\Scripts\activate.bat` (Windows OS).
+5. Install the required dependencies by running the `pip install -r requirements.txt`
+6. Create a database in PostgreSQL with a name of your choice.
+7. Open the `constants.py` file and edit the database connection configurations. 
+8. Run the `create_src_tables.py` file. `python create_tables.py`
+
+For more information on Python virtual environemnts, please click [here](https://docs.python.org/3/library/venv.html)
+For more information on PostgreSQL, please click [here](https://www.postgresql.org/)
+
+Once the source tables have been created, you can look around the data schema and run queries on the tables. 
 
 
 # Requirements Fulfillement 
@@ -20,7 +45,12 @@ The ER diagram to convert the unstructured model to a structured model is shown 
 
 ## **Second: Write queries that directly answer predetermined questions from a business stakeholder**
 
+*SQL file located in `task_requirement_dml/requirement_4.sql`*
+
 1. What are the top 5 brands by receipts scanned for most recent month?
+All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. So, there are no top 5 brands scanned for the most recent month. 
+One thing to note is that I have assumed "top 5 brands" to mean "top 5 brands that have sold the most number of items". In case we are looking for "top 5 brands that have the most sales", we can modify the query accordingly. 
+In a real-world scenario, it would be best to confirm what the stakeholders' definition of "top 5 brands" is.
 ```
 with month_year as (
     select distinct
@@ -60,10 +90,17 @@ from items i
 left join brands b
 on b.brand_code = i.brand_code
 group by i.brand_code, b.brand_name
-order by count(*) desc;
+order by count(*) desc
+limit 5;
 ```
 
 2. How does the ranking of the top 5 brands by receipts scanned for the recent month compare to the ranking for the previous month?
+All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. For the previous month (February 2021), the top 5 brands by items purchased are: 
+    - unbranded items/no brand code: 186
+    - brand_code "BRAND" (no brandName associated): 3
+    - brand_code "MISSION" (no brandName associated): 2
+    - Viva: 1
+Same assumption regarding the definition of "top 5 brands" from the previous query applies here as well.
 ```
 with month_year as (
     select distinct
@@ -103,20 +140,22 @@ from items i
 left join brands b
 on b.brand_code = i.brand_code
 group by i.brand_code, b.brand_name
-order by count(*) desc;
+order by count(*) desc
+limit 5;
 ```
 
 3. When considering average spend from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?
-```
-NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted'
-```
+
+NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder
 
 4. When considering total number of items purchased from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?
-```
-NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted'
-```
+
+NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require
+further clafification from stakeholder
 
 5. Which brand has the most spend among users who were created within the past 6 months?
+
+
 ```
 with month_year as (
 	select distinct extract(month from created_date) as month,
@@ -168,6 +207,8 @@ order by total_spent desc;
 
 ## **Third: Evaluate Data Quality Issues in the Data Provided**
 
+*The queries used to find these data quality issues have been stored in `task_requirement_dml/requirement_3.sql`*
+
 1. Users JSON file
     - Multiple duplicates found (283)
     - Multiple users found where role is not “consumer” but instead “fetch-staff”
@@ -188,9 +229,9 @@ order by total_spent desc;
     - Many of the receipt items contain a brand code that does not exist in the brands file.
     - The data in this file generally has a large amount of missing values. 
 
-## **Fourth: Communicate with Stakeholders
+## **Fourth: Communicate with Stakeholders**
 
-Hi <Stakeholder name>,
+Hi Stakeholder,
 
 Hope you are doing well!
 
@@ -237,34 +278,15 @@ Thank you so much for taking the time to read this email. Please let me know if 
 
 Thanks!
 
-Regards, 
+Regards,
 Varun Muppalla
 
 
-# Steps to run this project
+# Implementation Details
 
-To run the source code, at the very minimum you will need Python and PostgresSQL to be installed on your system. 
-Adding python to your home will make the execution of this code easier.
+This project tries to simulate a small-scale ELT pipeline for ingesting the data in the the raw gzip files provided in the exercise. 
 
-Instructions to run:
-1. Clone this repository to your system `git clone https://github.com/varun1210/Fetch-Rewards-Analytics-Engineer.git`.
-2. Navigate to the root of this repository `cd fetch-rewards-analytics-engineer`. 
-3. Create a python virtual environment `python -m venv .`.
-4. Activate the virtual environment. `source bin/activate` (Linux-based OS, Mac)/`\Scripts\activate.bat` (Windows OS).
-5. Install the required dependencies by running the `pip install -r requirements.txt`
-6. Create a database in PostgreSQL with a name of your choice.
-7. Open the constants.py file and edit the database connection configurations. 
-8. Run the create_src_tables.py file. `python create_tables.py`
-
-For more information on Python virtual environemnts, please click [here](https://docs.python.org/3/library/venv.html)
-For more information on PostgreSQL, please click [here](https://www.postgresql.org/)
-
-Once the source tables have been created, you can look around the data schema and run queries on the tables. 
-
-
-# Project implementation Details
-
-This project tries to simulate a small-scale ELT pipeline for loading the raw gzip files provided in the exercise. 
+The code to perform the ingestion is located in the `ingestion_scripts` directory. The code is primarily written in Python.
 
 Python has been used to 
 
