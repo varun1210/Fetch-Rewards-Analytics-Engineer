@@ -1,7 +1,7 @@
 # Fetch Rewards Analytics Engineer Task
 
 This repository contains my submission for the Analytics Engineer position at Fetch Rewards.
-The problem statement and description can be found by clicking [here](https://fetch-hiring.s3.amazonaws.com/analytics-engineer/ineeddata-data-modeling/data-modeling.html)
+The problem statement and description can be found by clicking [here](https://fetch-hiring.s3.amazonaws.com/analytics-engineer/ineeddata-data-modeling/data-modeling.html).
 
 The data warehouse that is being used for this project is Postgres. While traditionally, it is not used as a data warehouse, I have chosen to use it since it is open source and relatively lightweight.
 
@@ -15,7 +15,7 @@ Further implementation details are detailed after the task requirements.
 
 This section of the document details how to run this project as it is on your local system. Please note, that to do so, you will require Python and PostgresSQL to be installed on your local system. 
 
-**In case you do not want to run the data processing of the raw files and load to Postgres, but are just interested in the final tables that have been created, there are CSV extracts in the `src_table_data_extracts/` directory. Simply load the CSVs into a data warehouse of your choice, and you can query the data as found in the ER diagram [here](./fetch-ER-diagram.jpg).**  
+***IMPORTANT! In case you do not want to run the data processing of the raw files and load to Postgres, but are just interested in the final tables that have been created, there are CSV extracts in the `src_table_data_extracts/` directory. Simply load the CSVs into a data warehouse of your choice, and you can query the data as found in the ER diagram [here](./fetch-ER-diagram.jpg).***  
 *Please note that all the queries that are in this repository are written and supported by PostgreSQL. Running the queries/sql directly on a different platform/data warehouse could have issues.*
 
 ### Instructions to run:
@@ -29,10 +29,10 @@ This section of the document details how to run this project as it is on your lo
 5. Install the required dependencies by running the `pip install -r requirements.txt`
 6. Create a database in PostgreSQL with a name of your choice.
 7. Open the `constants.py` file and edit the database connection configurations. 
-8. Run the `create_src_tables.py` file. `python create_tables.py`
+8. Run the `create_src_tables.py` file. `python create_src_tables.py`
 
-For more information on Python virtual environemnts, please click [here](https://docs.python.org/3/library/venv.html)
-For more information on PostgreSQL, please click [here](https://www.postgresql.org/)
+* For more information on Python virtual environemnts, please click [here](https://docs.python.org/3/library/venv.html).  
+* For more information on PostgreSQL, please click [here](https://www.postgresql.org/).  
 
 Once the source tables have been created, you can look around the data schema and run queries on the tables. 
 
@@ -40,15 +40,17 @@ Once the source tables have been created, you can look around the data schema an
 # Requirements Fulfillement 
 
 ## **First Requirement: Review Existing Unstructured Data and Diagram a New Structured Relational Data Model**
-The ER diagram to convert the unstructured model to a structured model is shown below. Click [here](./data_schema_definition.txt) for the structured model data schema.
+The ER diagram to convert the unstructured model to a structured model is shown below.  
+Click [here](./data_schema_definition.txt) to look at the data schema of the structured model.  
+
 ![ER Diagram](./fetch-ER-diagram.jpg)
 
 ## **Second Requirement: Write queries that directly answer predetermined questions from a business stakeholder**
 
-#### *IMPORTANT! SQL file containing queries to answer these questions is located in `task_requirement_dml/requirement_4.sql`*  
+#### *IMPORTANT! SQL file containing queries to answer these questions is located in `task_requirement_dml/requirement_2.sql`*  
 
 1. What are the top 5 brands by receipts scanned for most recent month?  
-*All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. So, there are no top 5 brands scanned for the most recent month.*  
+**Answer:** *All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. So, there are no top 5 brands scanned for the most recent month.*  
 *One thing to note is that I have assumed "top 5 brands" to mean "top 5 brands that have sold the most number of items". In case we are looking for "top 5 brands that have the most sales", we can modify the query accordingly.*  
 *In a real-world scenario, it would be best to confirm what the stakeholders' definition of "top 5 brands" is.*
 ```
@@ -95,7 +97,7 @@ limit 5;
 ```
 
 2. How does the ranking of the top 5 brands by receipts scanned for the recent month compare to the ranking for the previous month?  
-*All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. For the previous month (February 2021), the top 5 brands by items purchased are (assumption regarding the definition of "top 5 brands" from the previous query applies here as well):*     
+**Answer:** *All the items purchased in the most recent month (March 2021) do not have a brand code associated with them/or are unbranded items like produce. For the previous month (February 2021), the top 5 brands by items purchased are (assumption regarding the definition of "top 5 brands" from the previous query applies here as well):*     
     - *unbranded items/no brand code: 186*
     - *brand_code "BRAND" (no brandName associated): 3*
     - *brand_code "MISSION" (no brandName associated): 2*
@@ -145,13 +147,13 @@ limit 5;
 ```
 
 3. When considering average spend from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?  
-    *NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder*
+**Answer:** *NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder*
 
 4. When considering total number of items purchased from receipts with 'rewardsReceiptStatus’ of ‘Accepted’ or ‘Rejected’, which is greater?  
-    *NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder*
+**Answer:** *NO DATA AVAILABLE FOR 'rewardsReceiptStatus’ = 'Accepted', will require further clafification from stakeholder*
 
 5. Which brand has the most spend among users who were created within the past 6 months?  
-*I define a brand's 'spend' as the aggregation of final prices of the items sold by the brand on the receipts. There are many price columns to consider, so I will require further stakeholder validation for this definition.*  
+**Answer:** *I have define a brand's 'spend' as the aggregation of final prices of the items sold by the brand on the receipts. There are many price columns to consider, so I will require further stakeholder validation for this definition.*  
 *But, considering this definition of a brand's spend, the brand with the highest spend is:*  
 *brandCode: "BEN AND JERRYS", brandName: No information available*  
 *Of the brands where the brandName is available, brandName: "Cracker Barrel Cheese" (brandCode: "CRACKER BARREL") has the highest spend.*  
@@ -189,7 +191,7 @@ order by brand_spend desc;
 ```
 
 6. Which brand has the most transactions among users who were created within the past 6 months?  
-*I define a brand's 'transactions' as the aggregation of the number of times the brand's items have appeared on the receipts. I will require further stakeholder validation for this definition.*  
+**Answer:** *I have defined a brand's 'transactions' as the aggregation of the number of times the brand's items have appeared on the receipts. I will require further stakeholder validation for this definition.*  
 *But, considering this definition of a brand's transactions, the brand with the highest transactions is:*  
 *brandCode: "HY-VEE", brandName: None available*  
 *Of the brands where brandName is available, brandName: "Pepsi" is the one with the highest number of transactions.*  
@@ -330,15 +332,17 @@ For user convinience, the creation of the source tables has been automated throu
 
 The `create_src_scripts.py` first creates the staging tables by from the `ingestion_scripts/create_stg_tables.py` file, then runs the SQL scripts located in the `src_table_ddl/` to create the source tables.
 
-Ideally in a real-world deployment, we would not use the `create_src_scripts.py` file, but instead would orchestrate the source table creation using a framework like Apache Airflow, or dbt.
+Ideally in a real-world deployment, we would not use the `create_src_scripts.py` file, but instead would orchestrate the source table creation using a framework like Apache Airflow, or dbt.  
 
 ### Data Ingestion (Staging Table Creation)
-The ingestion of the data and creation of staging tables is handled by the files located in `ingestion_scripts/`
+The ingestion of the data and creation of staging tables is handled by the files located in `ingestion_scripts/`  
 
 `ingest_receipts_data.py`, `ingest_brands_data.py` and `ingest_users_data.py` are the primary scrips responsible for processing the raw files and creating tables in Postgres.  
-Each of the `ingest_receipts_data.py`, `ingest_brands_data.py`, `ingest_users_data.py` is responsible for processing the data, then calls on functions from the `ingestion_utils.py` file to create and insert the tables. Having the code work this way helps with reusability and scalability in case more flat files are to be processed in the future. 
+Each of the `ingest_receipts_data.py`, `ingest_brands_data.py`, `ingest_users_data.py` is responsible for processing the data, then calls on functions from the `ingestion_utils.py` file to create and insert the tables. Having the code work this way helps with reusability and scalability in case more flat files are to be processed in the future.  
+
+Since the `create_stg_tables.py` only serves as an orchestrator, as before, in a real-world deployment, we would use a service like Apache Airflow to orchestrate the data ingestio files.  
 
 The following diagram describes the ingestion workflow:
-![Ingestion Workflow](./stg_table_code_execution.jpg)
+![Ingestion Workflow](./stg_table_code_execution.jpg)  
 
-The documentation within the code explains in further detail about code execution. 
+For more information, please review the code to understand execution flow. 
